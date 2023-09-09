@@ -9,8 +9,9 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        var UI = new UserInterface(scanner);
-        UI.run();
+        var userInterface = new UserInterface(scanner);
+
+        new PrimeNumbersServer(userInterface);
 
     }
 
