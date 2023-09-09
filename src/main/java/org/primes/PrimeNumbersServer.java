@@ -2,6 +2,7 @@ package org.primes;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 
@@ -21,6 +22,7 @@ public class PrimeNumbersServer {
                 System.out.println("Waiting for connection...");
 
                 SocketChannel socketChannel = serverSocketChannel.accept();
+                sendMessage(socketChannel, "Connected to server");
                 System.out.println("Connected to client");
 
                 while (true) {
@@ -30,6 +32,25 @@ public class PrimeNumbersServer {
 
         } catch (IOException e) {
             System.out.println("Can't start server");
+            e.printStackTrace();
+        }
+    }
+
+    public static void sendMessage(SocketChannel socketChannel, String message) {
+        try {
+            ByteBuffer byteBuffer = ByteBuffer.allocate(message.length() + 1);
+            byteBuffer.put(message.getBytes());
+            byteBuffer.put((byte) 0x00);
+            byteBuffer.flip();
+
+            while (byteBuffer.hasRemaining()) {
+                socketChannel.write(byteBuffer);
+            }
+
+            System.out.println("Sent: " + message);
+
+        } catch (IOException e) {
+            System.out.println("Channel can't write to byteBuffer");
             e.printStackTrace();
         }
     }
